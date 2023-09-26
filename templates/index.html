@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+{% block title %}Clients data{% endblock %}
+{% block main %}
+    <div class="container">
+        <form id="newNote" class="newnote_content" method="POST" action="">
+            <label for="firstName" class="form-field__label">Ваше Имя</label>
+            <input id="firstName" type="text" class="form-field__input" name="firstName"><br>
+            <label for="secondName" class="form-field__label">Ваша фамилия</label>
+            <input id="secondName" type="text" class="form-field__input" name="secondName"><br>
+            <label for="email" class="form-field__label">Ваша электронная почта</label>
+            <input id="email" type="text" class="form-field__input" name="email"><br>
+            <label for="password" class="form-field__label">Ваш пароль</label>
+            <input id="password" type="text" class="form-field__input" name="password"><br>
+            <br>
+            <input type="submit" value="Зарегестрироваться" />
+        </form>
+    </div>
+{% endblock %}
