@@ -5,6 +5,7 @@ import secrets
 from flask_sqlalchemy import SQLAlchemy
 from models import db, Myuser
 import docker
+from MyContainer import MyContainer
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex()
@@ -12,6 +13,7 @@ client = docker.from_env()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:postgres@127.0.0.1:6444/flask'
 db.init_app(app)
 client = docker.from_env()
+obj = MyContainer()
 
 # db = SQLAlchemy(app)
 
@@ -24,7 +26,7 @@ def index_get():
     # container1 = client.containers.get('raftest')
     # print(postgrContainer.labels)
     # print(client.)
-    # print(container.labels)
+    print(client.containers.list())
     return render_template('index.html')
 
 @app.cli.command("init-db")
@@ -34,10 +36,7 @@ def init_db():
 
 @app.cli.command("start-ct")
 def start_ct():
-    ports = {'5432/tcp': 6444}
-    environment={"POSTGRES_USERNAME":"postgres", "POSTGRES_PASSWORD": "postgres", "POSTGRES_DB": "flask"}
-    container = client.containers.run('postgres:15.4', ports=ports, environment=environment, detach=True)
-    print('OK')
+    obj.start()
 
 if __name__ == '__main__': 
     app.run(debug=True)
