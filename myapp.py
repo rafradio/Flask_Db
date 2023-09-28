@@ -3,9 +3,11 @@ from flask import render_template, redirect, session
 from markupsafe import escape
 import secrets
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Myuser
+from models import db, User
 import docker
 from MyContainer import MyContainer
+from datetime import datetime
+import asyncio
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex()
@@ -19,14 +21,18 @@ obj = MyContainer()
 
 @app.get('/')
 def index_get():
-    # name = request.cookies.get('username')
-    # print(f'Hello {name}!')
-    # postgrContainer = client.containers.get('09548287cc8e')
-    # container = client.containers.run('hello-world', detach=True)
-    # container1 = client.containers.get('raftest')
-    # print(postgrContainer.labels)
-    # print(client.)
-    print(client.containers.list())
+    return render_template('index.html')
+
+@app.post('/')
+def index_post():
+    first_name = escape(request.form.get('firstName'))
+    second_name = escape(request.form.get('secondName'))
+    email = escape(request.form.get('email'))
+    password = escape(request.form.get('password'))
+    user = User(first_name, second_name, email, password)
+    db.session.add(user)
+    db.session.commit()
+    print(user)
     return render_template('index.html')
 
 @app.cli.command("init-db")
@@ -36,7 +42,11 @@ def init_db():
 
 @app.cli.command("start-ct")
 def start_ct():
-    obj.start()
+    asyncio.run(obj.starter())
+    db.create_all()
+    print('OK')
+
+
 
 if __name__ == '__main__': 
     app.run(debug=True)
